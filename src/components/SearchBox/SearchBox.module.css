@@ -1,15 +1,15 @@
 .searchContainer {
-  margin-bottom: 40px;
+	margin-bottom: 40px;
 }
 .searchLabel {
-  display: block;
-  margin-bottom: 10px;
+	display: block;
+	margin-bottom: 10px;
 }
 
 .searchInput {
-  border-radius: 4px;
-  padding-inline: 12px;
-  padding-block: 8px;
-  border: 1px solid #292929;
-  min-width: 320px;
+	border-radius: 8px;
+	padding-inline: 12px;
+	padding-block: 8px;
+	border-style: none;
+	min-width: 320px;
 }

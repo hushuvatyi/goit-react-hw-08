@@ -1,21 +1,22 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { useId } from "react";
-
 import { useDispatch } from "react-redux";
+import { IoIosPersonAdd } from "react-icons/io";
+import toast from "react-hot-toast";
 
-import s from "./ContactForm.module.css";
-import { addContact } from "../../redux/contactsOps";
+import styles from "./ContactForm.module.css";
+import { addContact } from "../../redux/contacts/operations";
 
 const ContactSchema = Yup.object().shape({
   name: Yup.string()
-    .min(3, `The "Name" is too short!`)
-    .max(50, `The "Name" is too long!`)
-    .required('The "Name" is required field!'),
+    .min(3, `The "Name" is too Short!`)
+    .max(50, `The "Name" is too Long!`)
+    .required('The "Name" is Required field!'),
   number: Yup.string()
-    .min(3, `The "Number" is too short!`)
-    .max(50, `The "Number" is too long!`)
-    .required('The "Number" is required field!'),
+    .min(3, `The "Number" is too Short!`)
+    .max(50, `The "Number" is too Long!`)
+    .required('The "Number" is Required field!'),
 });
 
 const initialValues = {
@@ -25,14 +26,26 @@ const initialValues = {
 
 const ContactForm = () => {
   const nameFieldId = useId();
+
   const numberFieldId = useId();
 
   const dispatch = useDispatch();
 
   const handleSubmit = (values, actions) => {
-    dispatch(addContact(values));
-    actions.setSubmitting(false);
-    actions.resetForm();
+    dispatch(addContact(values))
+      .unwrap()
+      .then((result) => {
+        toast.success(`Contact ${values.name} Successfully added!`);
+        console.log("result: ", result);
+
+        actions.setSubmitting(false);
+        actions.resetForm();
+      })
+      .catch((error) => {
+        toast.error(error.message);
+
+        actions.setSubmitting(false);
+      });
   };
 
   return (
@@ -42,48 +55,51 @@ const ContactForm = () => {
       validationSchema={ContactSchema}
     >
       {({ isSubmitting }) => (
-        <Form className={s.formContact}>
-          <label className={s.formLabel} htmlFor={nameFieldId}>
+        <Form className={styles.formContact}>
+          <label className={styles.formLabel} htmlFor={nameFieldId}>
             Name
           </label>
-          <div className={s.formInputWrapper}>
+          <div className={styles.formInputWrapper}>
             <Field
-              className={s.formInput}
+              className={styles.formInput}
               type="text"
               name="name"
+              placeholder="Enter FirstName and LastName"
               id={nameFieldId}
             />
             <ErrorMessage
-              className={s.formErrorMessage}
+              className={styles.formErrorMessage}
               name="name"
               component="div"
             />
           </div>
 
-          <label className={s.formLabel} htmlFor={numberFieldId}>
+          <label className={styles.formLabel} htmlFor={numberFieldId}>
             Number
           </label>
-          <div className={s.formInputWrapper}>
+          <div className={styles.formInputWrapper}>
             <Field
-              className={s.formInput}
+              className={styles.formInput}
               type="tel"
               inputMode="tel"
               name="number"
+              placeholder="Phone format: XXX-XXX-XXXX"
               id={numberFieldId}
             />
             <ErrorMessage
-              className={s.formErrorMessage}
+              className={styles.formErrorMessage}
               name="number"
               component="div"
             />
           </div>
 
           <button
-            className={s.formButton}
+            className={styles.formButton}
             type="submit"
             disabled={isSubmitting}
           >
-            Add contact
+            <IoIosPersonAdd />
+            <span>Add</span>
           </button>
         </Form>
       )}
